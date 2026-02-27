@@ -470,15 +470,22 @@ export default function App() {
         backgroundColor: '#ffffff',
         onclone: (clonedDoc: Document) => {
           // Force all elements in the cloned document to avoid modern color functions
+          // and ensure icons are rendered with correct colors
           const elements = clonedDoc.querySelectorAll('#invoice-paper *');
           elements.forEach((el: any) => {
-            const style = window.getComputedStyle(el);
-            // If any color property contains oklch or oklab, we try to force a fallback
-            // This is a bit aggressive but helps with html2canvas limitations
             if (el.style) {
-              if (style.color.includes('okl')) el.style.color = '#1a1a2e';
-              if (style.backgroundColor.includes('okl')) el.style.backgroundColor = 'transparent';
-              if (style.borderColor.includes('okl')) el.style.borderColor = '#e8f0ff';
+              const style = window.getComputedStyle(el);
+              
+              // Replace any oklch/oklab colors with safe fallbacks
+              if (style.color.includes('okl')) el.style.setProperty('color', '#1a1a2e', 'important');
+              if (style.backgroundColor.includes('okl')) el.style.setProperty('background-color', 'transparent', 'important');
+              if (style.borderColor.includes('okl')) el.style.setProperty('border-color', '#e8f0ff', 'important');
+              
+              // Handle SVG elements specifically for icons
+              if (el.tagName.toLowerCase() === 'svg') {
+                if (style.fill && style.fill.includes('okl')) el.style.setProperty('fill', 'currentColor', 'important');
+                if (style.stroke && style.stroke.includes('okl')) el.style.setProperty('stroke', 'currentColor', 'important');
+              }
             }
           });
         }
