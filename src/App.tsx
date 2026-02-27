@@ -1080,9 +1080,9 @@ end $$;
 
         {view === 'invoice' && (
           <div className="max-w-4xl mx-auto px-4 py-8">
-            <div id="invoice-paper" className="bg-white border-2 border-[#e8f0ff] rounded-2xl shadow-2xl overflow-visible">
+            <div id="invoice-paper" className="bg-[#ffffff] border-2 border-[#e8f0ff] rounded-2xl overflow-visible">
               {/* Invoice Header */}
-              <div className="bg-[#00BFFF] p-8 text-white flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="bg-[#00BFFF] p-8 text-[#ffffff] flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="text-center md:text-left">
                   <h1 className="text-4xl font-black mb-1">Best Solution Experts</h1>
                   <p className="text-[#e0f7ff] font-medium">Digital Marketing & Technology Agency</p>
@@ -1111,7 +1111,7 @@ end $$;
                       <span className="px-2 py-0.5 bg-[#fff0e6] text-[#FF6A00] text-xs font-bold rounded">⏳ পেমেন্ট বাকি আছে</span>
                     </div>
                   </div>
-                  <div className="bg-sky-light-30 p-4 rounded-xl space-y-1">
+                  <div className="bg-[#f1fbff] p-4 rounded-xl space-y-1">
                     <h4 className="text-[#00BFFF] font-bold mb-2 flex items-center gap-2"><Star size={16}/> ক্লায়েন্টের তথ্য:</h4>
                     <p><span className="text-[#777777] text-xs">নাম:</span> <span className="font-bold">{formData.fullName}</span></p>
                     <p><span className="text-[#777777] text-xs">মোবাইল:</span> <span className="font-bold">{formData.mobile}</span></p>
@@ -1155,7 +1155,7 @@ end $$;
                     <span className="font-bold">৳{subtotal.toLocaleString('bn-BD')}</span>
                   </div>
                   {appliedCoupon && (
-                    <div className="w-full md:w-64 flex justify-between text-sm text-success">
+                    <div className="w-full md:w-64 flex justify-between text-sm text-[#22C55E]">
                       <span className="font-bold">কুপন ডিসকাউন্ট ({appliedCoupon.discount}%):</span>
                       <span className="font-bold">- ৳{discountAmount.toLocaleString('bn-BD')}</span>
                     </div>
@@ -1168,7 +1168,7 @@ end $$;
 
                 {/* Warranty & Support */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                  <div className="bg-orange-light-30 p-6 rounded-2xl border border-orange-brand-20">
+                  <div className="bg-[#fff9f5] p-6 rounded-2xl border border-[#ffe1cc]">
                     <h4 className="text-[#FF6A00] font-bold mb-4 flex items-center gap-2">🛡️ আফটার সেল সার্ভিস ও ওয়ারেন্টি</h4>
                     <ul className="space-y-2 text-xs font-medium">
                       <li className="flex items-start gap-2">✅ <span className="flex-grow">৩০ দিনের বিনামূল্যে সাপোর্ট</span></li>
@@ -1181,18 +1181,18 @@ end $$;
                       <li className="flex items-start gap-2">⚠️ <span className="flex-grow">কাজ শুরুর আগে ৫০% অগ্রিম পেমেন্ট</span></li>
                     </ul>
                   </div>
-                  <div className="bg-sky-light-30 p-6 rounded-2xl border border-sky-blue-20">
+                  <div className="bg-[#f1fbff] p-6 rounded-2xl border border-[#ccf2ff]">
                     <h4 className="text-[#00BFFF] font-bold mb-4 flex items-center gap-2">💳 পেমেন্ট পদ্ধতি</h4>
                     <div className="space-y-3 text-sm">
-                      <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-[#e8f0ff]">
+                      <div className="flex justify-between items-center bg-[#ffffff] p-2 rounded-lg border border-[#e8f0ff]">
                         <span className="font-bold text-[#db2777]">bKash (Personal)</span>
                         <span className="font-mono font-bold">০১৮৪৩০৬৭১১৮</span>
                       </div>
-                      <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-[#e8f0ff]">
+                      <div className="flex justify-between items-center bg-[#ffffff] p-2 rounded-lg border border-[#e8f0ff]">
                         <span className="font-bold text-[#ea580c]">Nagad</span>
                         <span className="font-mono font-bold">০১৮৪৩০৬৭১১৮</span>
                       </div>
-                      <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-[#e8f0ff]">
+                      <div className="flex justify-between items-center bg-[#ffffff] p-2 rounded-lg border border-[#e8f0ff]">
                         <span className="font-bold text-[#7e22ce]">Rocket</span>
                         <span className="font-mono font-bold">০১৮৪৩০৬৭১১৮</span>
                       </div>
