@@ -1080,12 +1080,12 @@ end $$;
 
         {view === 'invoice' && (
           <div className="max-w-4xl mx-auto px-4 py-8">
-            <div id="invoice-paper" className="bg-white border-2 border-border rounded-2xl shadow-2xl overflow-visible">
+            <div id="invoice-paper" className="bg-white border-2 border-[#e8f0ff] rounded-2xl shadow-2xl overflow-visible">
               {/* Invoice Header */}
-              <div className="bg-sky-blue p-8 text-white flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="bg-[#00BFFF] p-8 text-white flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="text-center md:text-left">
                   <h1 className="text-4xl font-black mb-1">Best Solution Experts</h1>
-                  <p className="text-sky-light font-medium">Digital Marketing & Technology Agency</p>
+                  <p className="text-[#e0f7ff] font-medium">Digital Marketing & Technology Agency</p>
                 </div>
                 <div className="text-center md:text-right space-y-1 text-sm">
                   <p className="flex items-center justify-center md:justify-end gap-2"><Phone size={14}/> ০১৮৪৩০৬৭১১৮</p>
@@ -1096,36 +1096,36 @@ end $$;
 
               <div className="p-8">
                 {/* Invoice Meta */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 pb-8 border-b border-border">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 pb-8 border-b border-[#e8f0ff]">
                   <div className="space-y-2">
                     <div className="flex justify-between md:justify-start md:gap-4">
-                      <span className="text-text-muted font-bold">ইনভয়েস নং:</span>
-                      <span className="font-bold text-sky-blue">{invoiceNumber}</span>
+                      <span className="text-[#777777] font-bold">ইনভয়েস নং:</span>
+                      <span className="font-bold text-[#00BFFF]">{invoiceNumber}</span>
                     </div>
                     <div className="flex justify-between md:justify-start md:gap-4">
-                      <span className="text-text-muted font-bold">তারিখ:</span>
+                      <span className="text-[#777777] font-bold">তারিখ:</span>
                       <span className="font-medium">{orderDate}</span>
                     </div>
                     <div className="flex justify-between md:justify-start md:gap-4">
-                      <span className="text-text-muted font-bold">পেমেন্ট স্ট্যাটাস:</span>
-                      <span className="px-2 py-0.5 bg-orange-light text-orange-brand text-xs font-bold rounded">⏳ পেমেন্ট বাকি আছে</span>
+                      <span className="text-[#777777] font-bold">পেমেন্ট স্ট্যাটাস:</span>
+                      <span className="px-2 py-0.5 bg-[#fff0e6] text-[#FF6A00] text-xs font-bold rounded">⏳ পেমেন্ট বাকি আছে</span>
                     </div>
                   </div>
-                  <div className="bg-sky-light/30 p-4 rounded-xl space-y-1">
-                    <h4 className="text-sky-blue font-bold mb-2 flex items-center gap-2"><Star size={16}/> ক্লায়েন্টের তথ্য:</h4>
-                    <p><span className="text-text-muted text-xs">নাম:</span> <span className="font-bold">{formData.fullName}</span></p>
-                    <p><span className="text-text-muted text-xs">মোবাইল:</span> <span className="font-bold">{formData.mobile}</span></p>
-                    <p><span className="text-text-muted text-xs">প্রতিষ্ঠান:</span> <span className="font-bold">{formData.businessName}</span></p>
-                    <p><span className="text-text-muted text-xs">ঠিকানা:</span> <span className="font-medium">{formData.address}, {formData.district}</span></p>
+                  <div className="bg-sky-light-30 p-4 rounded-xl space-y-1">
+                    <h4 className="text-[#00BFFF] font-bold mb-2 flex items-center gap-2"><Star size={16}/> ক্লায়েন্টের তথ্য:</h4>
+                    <p><span className="text-[#777777] text-xs">নাম:</span> <span className="font-bold">{formData.fullName}</span></p>
+                    <p><span className="text-[#777777] text-xs">মোবাইল:</span> <span className="font-bold">{formData.mobile}</span></p>
+                    <p><span className="text-[#777777] text-xs">প্রতিষ্ঠান:</span> <span className="font-bold">{formData.businessName}</span></p>
+                    <p><span className="text-[#777777] text-xs">ঠিকানা:</span> <span className="font-medium">{formData.address}, {formData.district}</span></p>
                   </div>
                 </div>
 
                 {/* Table */}
                 <div className="mb-8 overflow-x-auto">
-                  <h4 className="text-lg font-bold mb-4 flex items-center gap-2"><Layout size={18} className="text-sky-blue"/> বুক করা সার্ভিস:</h4>
+                  <h4 className="text-lg font-bold mb-4 flex items-center gap-2"><Layout size={18} className="text-[#00BFFF]"/> বুক করা সার্ভিস:</h4>
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-sky-light/50 text-sky-blue uppercase text-xs font-black">
+                      <tr className="bg-[#f0faff] text-[#00BFFF] uppercase text-xs font-black">
                         <th className="p-4 rounded-l-lg">ক্রমিক</th>
                         <th className="p-4">সার্ভিস নাম</th>
                         <th className="p-4 text-center">পরিমাণ</th>
@@ -1134,11 +1134,11 @@ end $$;
                     </thead>
                     <tbody className="text-sm">
                       {cart.map((item, idx) => (
-                        <tr key={item.id} className="border-b border-border hover:bg-gray-50 transition-colors">
-                          <td className="p-4 font-bold text-text-muted">{idx + 1}</td>
+                        <tr key={item.id} className="border-b border-[#e8f0ff] hover:bg-[#f9fafb] transition-colors">
+                          <td className="p-4 font-bold text-[#777777]">{idx + 1}</td>
                           <td className="p-4">
                             <div className="font-bold">{item.name}</div>
-                            <div className="text-[10px] text-text-muted">{item.category}</div>
+                            <div className="text-[10px] text-[#777777]">{item.category}</div>
                           </td>
                           <td className="p-4 text-center font-bold">{item.quantity}</td>
                           <td className="p-4 text-right font-bold">৳{(item.discountPrice * item.quantity).toLocaleString('bn-BD')}</td>
@@ -1151,7 +1151,7 @@ end $$;
                 {/* Totals */}
                 <div className="flex flex-col items-end space-y-2 mb-12">
                   <div className="w-full md:w-64 flex justify-between text-sm">
-                    <span className="text-text-muted font-bold">সাবটোটাল:</span>
+                    <span className="text-[#777777] font-bold">সাবটোটাল:</span>
                     <span className="font-bold">৳{subtotal.toLocaleString('bn-BD')}</span>
                   </div>
                   {appliedCoupon && (
@@ -1160,7 +1160,7 @@ end $$;
                       <span className="font-bold">- ৳{discountAmount.toLocaleString('bn-BD')}</span>
                     </div>
                   )}
-                  <div className="w-full md:w-64 flex justify-between text-2xl font-black text-sky-blue pt-4 border-t-2 border-sky-blue">
+                  <div className="w-full md:w-64 flex justify-between text-2xl font-black text-[#00BFFF] pt-4 border-t-2 border-[#00BFFF]">
                     <span>মোট দেয়:</span>
                     <span>৳{total.toLocaleString('bn-BD')}</span>
                   </div>
@@ -1168,8 +1168,8 @@ end $$;
 
                 {/* Warranty & Support */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                  <div className="bg-orange-light/30 p-6 rounded-2xl border border-orange-brand/20">
-                    <h4 className="text-orange-brand font-bold mb-4 flex items-center gap-2">🛡️ আফটার সেল সার্ভিস ও ওয়ারেন্টি</h4>
+                  <div className="bg-orange-light-30 p-6 rounded-2xl border border-orange-brand-20">
+                    <h4 className="text-[#FF6A00] font-bold mb-4 flex items-center gap-2">🛡️ আফটার সেল সার্ভিস ও ওয়ারেন্টি</h4>
                     <ul className="space-y-2 text-xs font-medium">
                       <li className="flex items-start gap-2">✅ <span className="flex-grow">৩০ দিনের বিনামূল্যে সাপোর্ট</span></li>
                       <li className="flex items-start gap-2">✅ <span className="flex-grow">৭ দিনের মধ্যে আনলিমিটেড ছোট রিভিশন</span></li>
@@ -1181,36 +1181,36 @@ end $$;
                       <li className="flex items-start gap-2">⚠️ <span className="flex-grow">কাজ শুরুর আগে ৫০% অগ্রিম পেমেন্ট</span></li>
                     </ul>
                   </div>
-                  <div className="bg-sky-light/20 p-6 rounded-2xl border border-sky-blue/20">
-                    <h4 className="text-sky-blue font-bold mb-4 flex items-center gap-2">💳 পেমেন্ট পদ্ধতি</h4>
+                  <div className="bg-sky-light-30 p-6 rounded-2xl border border-sky-blue-20">
+                    <h4 className="text-[#00BFFF] font-bold mb-4 flex items-center gap-2">💳 পেমেন্ট পদ্ধতি</h4>
                     <div className="space-y-3 text-sm">
-                      <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-border">
-                        <span className="font-bold text-pink-600">bKash (Personal)</span>
+                      <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-[#e8f0ff]">
+                        <span className="font-bold text-[#db2777]">bKash (Personal)</span>
                         <span className="font-mono font-bold">০১৮৪৩০৬৭১১৮</span>
                       </div>
-                      <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-border">
-                        <span className="font-bold text-orange-600">Nagad</span>
+                      <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-[#e8f0ff]">
+                        <span className="font-bold text-[#ea580c]">Nagad</span>
                         <span className="font-mono font-bold">০১৮৪৩০৬৭১১৮</span>
                       </div>
-                      <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-border">
-                        <span className="font-bold text-purple-700">Rocket</span>
+                      <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-[#e8f0ff]">
+                        <span className="font-bold text-[#7e22ce]">Rocket</span>
                         <span className="font-mono font-bold">০১৮৪৩০৬৭১১৮</span>
                       </div>
-                      <p className="text-[10px] text-text-muted text-center italic">ব্যাংক ট্রান্সফারের জন্য যোগাযোগ করুন</p>
+                      <p className="text-[10px] text-[#777777] text-center italic">ব্যাংক ট্রান্সফারের জন্য যোগাযোগ করুন</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Footer */}
-                <div className="text-center space-y-4 pt-8 border-t border-border">
-                  <p className="text-lg font-bold text-sky-blue">ধন্যবাদ! Best Solution Experts — আপনার পাশে। 🙏</p>
-                  <p className="text-sm text-text-muted">আমরা আপনার সাফল্যে বিশ্বাস করি।</p>
-                  <div className="flex justify-center gap-6 text-sky-blue font-bold text-xs">
+                <div className="text-center space-y-4 pt-8 border-t border-[#e8f0ff]">
+                  <p className="text-lg font-bold text-[#00BFFF]">ধন্যবাদ! Best Solution Experts — আপনার পাশে। 🙏</p>
+                  <p className="text-sm text-[#777777]">আমরা আপনার সাফল্যে বিশ্বাস করি।</p>
+                  <div className="flex justify-center gap-6 text-[#00BFFF] font-bold text-xs">
                     <span className="flex items-center gap-1"><Phone size={12}/> ০১৮৪৩০৬৭১১৮</span>
                     <span className="flex items-center gap-1"><Globe size={12}/> www.bestsolutionexperts.com</span>
                     <span className="flex items-center gap-1"><Share2 size={12}/> Best Solution Experts</span>
                   </div>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Best Solution Experts — আপনার ডিজিটাল অংশীদার</p>
+                  <p className="text-[10px] text-[#9ca3af] font-bold uppercase tracking-widest">Best Solution Experts — আপনার ডিজিটাল অংশীদার</p>
                 </div>
               </div>
             </div>

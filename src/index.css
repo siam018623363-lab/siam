@@ -12,6 +12,13 @@
   --color-old-price: #999999;
   --color-border: #e8f0ff;
   --color-text-muted: #777777;
+  
+  /* Solid colors for PDF compatibility (avoiding opacity modifiers) */
+  --color-sky-light-30: #f1fbff;
+  --color-sky-light-50: #f0faff;
+  --color-orange-light-30: #fff9f5;
+  --color-sky-blue-20: #ccf2ff;
+  --color-orange-brand-20: #ffe1cc;
 }
 
 @layer base {
