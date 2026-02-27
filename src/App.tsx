@@ -466,7 +466,22 @@ export default function App() {
         letterRendering: true,
         scrollY: 0,
         scrollX: 0,
-        windowWidth: 1200
+        windowWidth: 1200,
+        backgroundColor: '#ffffff',
+        onclone: (clonedDoc: Document) => {
+          // Force all elements in the cloned document to avoid modern color functions
+          const elements = clonedDoc.querySelectorAll('#invoice-paper *');
+          elements.forEach((el: any) => {
+            const style = window.getComputedStyle(el);
+            // If any color property contains oklch or oklab, we try to force a fallback
+            // This is a bit aggressive but helps with html2canvas limitations
+            if (el.style) {
+              if (style.color.includes('okl')) el.style.color = '#1a1a2e';
+              if (style.backgroundColor.includes('okl')) el.style.backgroundColor = 'transparent';
+              if (style.borderColor.includes('okl')) el.style.borderColor = '#e8f0ff';
+            }
+          });
+        }
       },
       jsPDF: { 
         unit: 'mm', 
@@ -1080,7 +1095,26 @@ end $$;
 
         {view === 'invoice' && (
           <div className="max-w-4xl mx-auto px-4 py-8">
-            <div id="invoice-paper" className="bg-[#ffffff] border-2 border-[#e8f0ff] rounded-2xl overflow-visible">
+            <style>{`
+              #invoice-paper {
+                background-color: #ffffff !important;
+                color: #1a1a2e !important;
+              }
+              #invoice-paper * {
+                color-scheme: light !important;
+                transition: none !important;
+                animation: none !important;
+                text-shadow: none !important;
+                box-shadow: none !important;
+              }
+              /* Explicitly override any potential oklch/oklab leakage */
+              .text-sky-blue { color: #00BFFF !important; }
+              .bg-sky-blue { background-color: #00BFFF !important; }
+              .text-success { color: #22C55E !important; }
+              .text-danger { color: #EF4444 !important; }
+              .border-border { border-color: #e8f0ff !important; }
+            `}</style>
+            <div id="invoice-paper" style={{ color: '#1a1a2e' }} className="bg-[#ffffff] border-2 border-[#e8f0ff] rounded-2xl overflow-visible">
               {/* Invoice Header */}
               <div className="bg-[#00BFFF] p-8 text-[#ffffff] flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="text-center md:text-left">
@@ -1088,9 +1122,9 @@ end $$;
                   <p className="text-[#e0f7ff] font-medium">Digital Marketing & Technology Agency</p>
                 </div>
                 <div className="text-center md:text-right space-y-1 text-sm">
-                  <p className="flex items-center justify-center md:justify-end gap-2"><Phone size={14}/> ০১৮৪৩০৬৭১১৮</p>
-                  <p className="flex items-center justify-center md:justify-end gap-2"><Globe size={14}/> www.bestsolutionexperts.com</p>
-                  <p className="flex items-center justify-center md:justify-end gap-2"><Mail size={14}/> info@bestsolutionexperts.com</p>
+                  <p className="flex items-center justify-center md:justify-end gap-2"><Phone size={14} color="#ffffff"/> ০১৮৪৩০৬৭১১৮</p>
+                  <p className="flex items-center justify-center md:justify-end gap-2"><Globe size={14} color="#ffffff"/> www.bestsolutionexperts.com</p>
+                  <p className="flex items-center justify-center md:justify-end gap-2"><Mail size={14} color="#ffffff"/> info@bestsolutionexperts.com</p>
                 </div>
               </div>
 
@@ -1112,7 +1146,7 @@ end $$;
                     </div>
                   </div>
                   <div className="bg-[#f1fbff] p-4 rounded-xl space-y-1">
-                    <h4 className="text-[#00BFFF] font-bold mb-2 flex items-center gap-2"><Star size={16}/> ক্লায়েন্টের তথ্য:</h4>
+                    <h4 className="text-[#00BFFF] font-bold mb-2 flex items-center gap-2"><Star size={16} color="#00BFFF"/> ক্লায়েন্টের তথ্য:</h4>
                     <p><span className="text-[#777777] text-xs">নাম:</span> <span className="font-bold">{formData.fullName}</span></p>
                     <p><span className="text-[#777777] text-xs">মোবাইল:</span> <span className="font-bold">{formData.mobile}</span></p>
                     <p><span className="text-[#777777] text-xs">প্রতিষ্ঠান:</span> <span className="font-bold">{formData.businessName}</span></p>
@@ -1122,7 +1156,7 @@ end $$;
 
                 {/* Table */}
                 <div className="mb-8 overflow-x-auto">
-                  <h4 className="text-lg font-bold mb-4 flex items-center gap-2"><Layout size={18} className="text-[#00BFFF]"/> বুক করা সার্ভিস:</h4>
+                  <h4 className="text-lg font-bold mb-4 flex items-center gap-2"><Layout size={18} color="#00BFFF"/> বুক করা সার্ভিস:</h4>
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="bg-[#f0faff] text-[#00BFFF] uppercase text-xs font-black">
@@ -1134,7 +1168,7 @@ end $$;
                     </thead>
                     <tbody className="text-sm">
                       {cart.map((item, idx) => (
-                        <tr key={item.id} className="border-b border-[#e8f0ff] hover:bg-[#f9fafb] transition-colors">
+                        <tr key={item.id} className="border-b border-[#e8f0ff]">
                           <td className="p-4 font-bold text-[#777777]">{idx + 1}</td>
                           <td className="p-4">
                             <div className="font-bold">{item.name}</div>
@@ -1206,9 +1240,9 @@ end $$;
                   <p className="text-lg font-bold text-[#00BFFF]">ধন্যবাদ! Best Solution Experts — আপনার পাশে। 🙏</p>
                   <p className="text-sm text-[#777777]">আমরা আপনার সাফল্যে বিশ্বাস করি।</p>
                   <div className="flex justify-center gap-6 text-[#00BFFF] font-bold text-xs">
-                    <span className="flex items-center gap-1"><Phone size={12}/> ০১৮৪৩০৬৭১১৮</span>
-                    <span className="flex items-center gap-1"><Globe size={12}/> www.bestsolutionexperts.com</span>
-                    <span className="flex items-center gap-1"><Share2 size={12}/> Best Solution Experts</span>
+                    <span className="flex items-center gap-1"><Phone size={12} color="#00BFFF"/> ০১৮৪৩০৬৭১১৮</span>
+                    <span className="flex items-center gap-1"><Globe size={12} color="#00BFFF"/> www.bestsolutionexperts.com</span>
+                    <span className="flex items-center gap-1"><Share2 size={12} color="#00BFFF"/> Best Solution Experts</span>
                   </div>
                   <p className="text-[10px] text-[#9ca3af] font-bold uppercase tracking-widest">Best Solution Experts — আপনার ডিজিটাল অংশীদার</p>
                 </div>
