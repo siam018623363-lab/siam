@@ -441,22 +441,32 @@ export default function App() {
 
   const downloadInvoicePDF = () => {
     const element = document.getElementById('invoice-paper');
-    if (!element) return;
+    if (!element) {
+      showToast('❌ ইনভয়েস পাওয়া যায়নি', 'error');
+      return;
+    }
 
     if (typeof (window as any).html2pdf === 'undefined') {
+      showToast('⚠️ PDF লাইব্রেরি লোড হচ্ছে, আবার চেষ্টা করুন', 'info');
       window.print();
       return;
     }
 
+    // Scroll to top to ensure clean capture
+    window.scrollTo(0, 0);
+
     const opt = {
-      margin: [10, 10, 10, 10],
+      margin: 10,
       filename: `BSE-Invoice-${invoiceNumber}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
         scale: 2, 
         useCORS: true, 
         logging: false,
-        allowTaint: true
+        letterRendering: true,
+        scrollY: 0,
+        scrollX: 0,
+        windowWidth: 1200
       },
       jsPDF: { 
         unit: 'mm', 
@@ -468,17 +478,20 @@ export default function App() {
 
     showToast('⏳ PDF তৈরি হচ্ছে, অপেক্ষা করুন...', 'info');
 
-    (window as any).html2pdf()
-      .set(opt)
-      .from(element)
-      .save()
-      .then(() => {
-        showToast('✅ PDF ডাউনলোড হয়েছে!', 'success');
-      })
-      .catch((err: any) => {
-        console.error(err);
-        showToast('❌ PDF তৈরিতে সমস্যা হয়েছে', 'error');
-      });
+    setTimeout(() => {
+      (window as any).html2pdf()
+        .set(opt)
+        .from(element)
+        .save()
+        .then(() => {
+          showToast('✅ PDF ডাউনলোড হয়েছে!', 'success');
+        })
+        .catch((err: any) => {
+          console.error('PDF Generation Error:', err);
+          showToast('❌ PDF তৈরিতে সমস্যা হয়েছে। ব্রাউজার প্রিন্ট ব্যবহার করুন।', 'error');
+          window.print();
+        });
+    }, 500);
   };
 
   return (
@@ -1067,7 +1080,7 @@ end $$;
 
         {view === 'invoice' && (
           <div className="max-w-4xl mx-auto px-4 py-8">
-            <div id="invoice-paper" className="bg-white border-2 border-border rounded-2xl shadow-2xl overflow-hidden">
+            <div id="invoice-paper" className="bg-white border-2 border-border rounded-2xl shadow-2xl overflow-visible">
               {/* Invoice Header */}
               <div className="bg-sky-blue p-8 text-white flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="text-center md:text-left">
