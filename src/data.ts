@@ -654,22 +654,88 @@ export const SERVICES: Service[] = [
 ];
 
 export const DOMAINS = [
-  { name: '.com', price: 1200, originalPrice: 1500 },
-  { name: '.net', price: 1400, originalPrice: 1700 },
-  { name: '.org', price: 1300, originalPrice: 1600 },
-  { name: '.com.bd', price: 2000, originalPrice: 2500 },
-  { name: '.xyz', price: 600, originalPrice: 800 },
-  { name: '.store', price: 1800, originalPrice: 2200 },
-  { name: '.online', price: 800, originalPrice: 1000 },
-  { name: '.site', price: 700, originalPrice: 900 },
-  { name: '.tech', price: 1500, originalPrice: 1900 },
-  { name: '.io', price: 3000, originalPrice: 3800 },
+  { name: '.com', price: 1499, originalPrice: 1800 },
+  { name: '.net', price: 1799, originalPrice: 2100 },
+  { name: '.org', price: 1499, originalPrice: 1800 },
+  { name: '.xyz', price: 399, originalPrice: 800 },
+  { name: '.info', price: 599, originalPrice: 1000 },
+  { name: '.shop', price: 349, originalPrice: 800 },
+  { name: '.pro', price: 599, originalPrice: 1000 },
+  { name: '.top', price: 399, originalPrice: 800 },
+  { name: '.site', price: 599, originalPrice: 1000 },
+  { name: '.store', price: 399, originalPrice: 800 },
 ];
 
 export const HOSTING_PLANS = [
-  { name: 'বেসিক (৫GB SSD)', prices: { '1m': 300, '3m': 800, '6m': 1400, '1y': 2500 } },
-  { name: 'স্ট্যান্ডার্ড (২০GB SSD)', prices: { '1m': 600, '3m': 1600, '6m': 2800, '1y': 5000 } },
-  { name: 'প্রিমিয়াম (আনলিমিটেড)', prices: { '1m': 1200, '3m': 3200, '6m': 5500, '1y': 10000 } },
+  { 
+    name: 'WP Starter', 
+    prices: { '1m': 199, '1y': 1999 },
+    features: [
+      '10 GB NVMe SSD Storage',
+      '2 Addon Domain',
+      '5 Subdomains',
+      '10 E-Mail Accounts',
+      'Control Panel',
+      '99.99% Uptime',
+      'Unlimited Bandwidth',
+      'Unlimited Free SSL',
+      'LiteSpeed Server',
+      'Redis & memcached Enabled',
+      '2 CPU & 2 GB Ram',
+      '2,00,000 File/Directories (inodes)',
+      'WordPress Optimized',
+      'Python, Node Js, or Ruby',
+      'No SSH Access',
+      '5 Databases',
+      '20 MB/s IO'
+    ]
+  },
+  { 
+    name: 'WP Plus', 
+    prices: { '1m': 399, '1y': 3999 },
+    features: [
+      '20 GB NVMe SSD Storage',
+      '3 Addon Domain',
+      '10 Subdomains',
+      '20 E-Mail Accounts',
+      'Control Panel',
+      '99.99% Uptime',
+      'Unlimited Bandwidth',
+      'Unlimited Free SSL',
+      'LiteSpeed Server',
+      'Redis & memcached Enabled',
+      '2 CPU & 3 GB Ram',
+      '4,00,000 File/Directories (inodes)',
+      'WordPress Optimized',
+      'Python, Node Js, or Ruby',
+      'No SSH Access',
+      '10 Databases',
+      '25 MB/s IO'
+    ]
+  },
+  { 
+    name: 'WP Pro', 
+    prices: { '1m': 599, '1y': 5999 },
+    features: [
+      '30 GB NVMe SSD Storage',
+      '5 Addon Domain',
+      '15 Subdomains',
+      '30 E-Mail Accounts',
+      'Control Panel',
+      '99.99% Uptime',
+      'Unlimited Bandwidth',
+      'Unlimited Free SSL',
+      'LiteSpeed Server',
+      'Redis & memcached Enabled',
+      '2 CPU & 4 GB Ram',
+      '6,00,000 File/Directories (inodes)',
+      'WordPress Optimized',
+      'Python, Node Js, or Ruby',
+      'No SSH Access',
+      '15 Databases',
+      '25 MB/s IO'
+    ]
+  },
 ];
 
 export const COUPONS: Record<string, { discount: number; label: string }> = {

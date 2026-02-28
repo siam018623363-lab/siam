@@ -210,8 +210,8 @@ export default function App() {
   };
 
   const addNewService = async () => {
-    if (!newService.name || !newService.category || !newService.originalPrice || !newService.discountPrice) {
-      showToast('⚠️ সব তথ্য পূরণ করুন', 'error');
+    if (!newService.name || !newService.category) {
+      showToast('⚠️ নাম এবং ক্যাটাগরি পূরণ করুন', 'error');
       return;
     }
 
@@ -223,18 +223,24 @@ export default function App() {
         name: newService.name,
         category: newService.category,
         icon: newService.icon || '✨',
-        original_price: newService.originalPrice,
-        discount_price: newService.discountPrice,
+        original_price: Number(newService.originalPrice) || 0,
+        discount_price: Number(newService.discountPrice) || 0,
         description: newService.description || '',
         search_tags: newService.searchTags || [],
         durations: null
       };
 
+      console.log('Attempting to add service:', serviceToAdd);
+
       const { error } = await supabase
         .from('services')
         .insert([serviceToAdd]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase Insert Error:', error);
+        showToast(`❌ সমস্যা হয়েছে: ${error.message}`, 'error');
+        throw error;
+      }
 
       showToast('✅ নতুন সার্ভিস যোগ হয়েছে!', 'success');
       setShowAddServiceModal(false);
@@ -456,7 +462,7 @@ export default function App() {
     window.scrollTo(0, 0);
 
     const opt = {
-      margin: 10,
+      margin: 0, // Remove top margin to fix empty space
       filename: `BSE-Invoice-${invoiceNumber}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
@@ -467,28 +473,28 @@ export default function App() {
         scrollY: 0,
         scrollX: 0,
         backgroundColor: '#ffffff',
-        windowWidth: 1200, // Provide a stable virtual window width
+        windowWidth: 1200,
         onclone: (clonedDoc: Document) => {
           const invoice = clonedDoc.getElementById('invoice-paper');
           if (invoice) {
             // Force the invoice to be at the very top-left of the cloned document
-            // and remove any centering or max-width constraints that cause clipping
-            invoice.style.width = '850px'; // Slightly wider than A4 to ensure no text wraps unexpectedly
+            invoice.style.width = '850px';
             invoice.style.margin = '0';
-            invoice.style.padding = '0';
+            invoice.style.padding = '40px'; // Add internal padding for better look
             invoice.style.position = 'absolute';
             invoice.style.top = '0';
             invoice.style.left = '0';
             invoice.style.maxWidth = 'none';
             invoice.style.borderRadius = '0';
+            invoice.style.boxShadow = 'none';
+            invoice.style.border = 'none';
             
-            // Clear the body to prevent any other elements from interfering
+            // Clear the body to prevent any other elements (like toasts) from interfering
             clonedDoc.body.style.margin = '0';
             clonedDoc.body.style.padding = '0';
-            clonedDoc.body.style.width = '1200px';
-            clonedDoc.body.style.height = 'auto';
-            clonedDoc.body.innerHTML = ''; // Clear everything
-            clonedDoc.body.appendChild(invoice); // Only keep the invoice
+            clonedDoc.body.style.backgroundColor = '#ffffff';
+            clonedDoc.body.innerHTML = ''; 
+            clonedDoc.body.appendChild(invoice);
           }
 
           // Force all elements in the cloned document to avoid modern color functions
@@ -547,7 +553,7 @@ export default function App() {
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 20 }}
             exit={{ opacity: 0, y: -50 }}
-            className={`fixed top-0 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-full shadow-lg text-white font-medium flex items-center gap-2 ${
+            className={`fixed top-0 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-full shadow-lg text-white font-medium flex items-center gap-2 no-print ${
               toast.type === 'success' ? 'bg-success' : toast.type === 'error' ? 'bg-danger' : 'bg-gray-600'
             }`}
           >
@@ -1143,43 +1149,47 @@ end $$;
               .text-danger { color: #EF4444 !important; }
               .border-border { border-color: #e8f0ff !important; }
             `}</style>
-            <div id="invoice-paper" style={{ color: '#1a1a2e' }} className="bg-[#ffffff] border-2 border-[#e8f0ff] rounded-2xl overflow-visible">
-              {/* Invoice Header */}
-              <div className="bg-[#00BFFF] p-8 text-[#ffffff] flex flex-col md:flex-row justify-between items-center gap-6">
-                <div className="text-center md:text-left">
-                  <h1 className="text-4xl font-black mb-1">Best Solution Experts</h1>
-                  <p className="text-[#e0f7ff] font-medium">Digital Marketing & Technology Agency</p>
+            <div id="invoice-paper" style={{ color: '#1a1a2e' }} className="bg-[#ffffff] border-2 border-[#e8f0ff] rounded-2xl overflow-visible shadow-xl">
+              {/* Invoice Header - More Professional */}
+              <div className="bg-[#00BFFF] p-10 text-[#ffffff] flex flex-col md:flex-row justify-between items-center gap-8 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full -ml-24 -mb-24 blur-2xl"></div>
+                
+                <div className="text-center md:text-left relative z-10">
+                  <h1 className="text-5xl font-black mb-2 tracking-tighter">Best Solution Experts</h1>
+                  <p className="text-[#e0f7ff] font-bold text-lg opacity-90">Digital Marketing & Technology Agency</p>
                 </div>
-                <div className="text-center md:text-right space-y-1 text-sm">
-                  <p className="flex items-center justify-center md:justify-end gap-2"><Phone size={14} color="#ffffff"/> ০১৮৪৩০৬৭১১৮</p>
-                  <p className="flex items-center justify-center md:justify-end gap-2"><Globe size={14} color="#ffffff"/> www.bestsolutionexperts.com</p>
-                  <p className="flex items-center justify-center md:justify-end gap-2"><Mail size={14} color="#ffffff"/> info@bestsolutionexperts.com</p>
+                <div className="text-center md:text-right space-y-2 text-sm relative z-10 bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/20">
+                  <p className="flex items-center justify-center md:justify-end gap-2 font-bold"><Phone size={16} color="#ffffff"/> ০১৮৪৩০৬৭১১৮</p>
+                  <p className="flex items-center justify-center md:justify-end gap-2 font-bold"><Globe size={16} color="#ffffff"/> www.bestsolutionexperts.com</p>
+                  <p className="flex items-center justify-center md:justify-end gap-2 font-bold"><Mail size={16} color="#ffffff"/> info@bestsolutionexperts.com</p>
                 </div>
               </div>
 
-              <div className="p-8">
+              <div className="p-10">
                 {/* Invoice Meta */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 pb-8 border-b border-[#e8f0ff]">
-                  <div className="space-y-2">
-                    <div className="flex justify-between md:justify-start md:gap-4">
-                      <span className="text-[#777777] font-bold">ইনভয়েস নং:</span>
-                      <span className="font-bold text-[#00BFFF]">{invoiceNumber}</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10 pb-10 border-b-2 border-[#e8f0ff]">
+                  <div className="space-y-3">
+                    <div className="flex justify-between md:justify-start md:gap-6 items-center">
+                      <span className="text-[#777777] font-black text-xs uppercase tracking-widest">ইনভয়েস নং:</span>
+                      <span className="font-black text-xl text-[#00BFFF]">{invoiceNumber}</span>
                     </div>
-                    <div className="flex justify-between md:justify-start md:gap-4">
-                      <span className="text-[#777777] font-bold">তারিখ:</span>
-                      <span className="font-medium">{orderDate}</span>
+                    <div className="flex justify-between md:justify-start md:gap-6 items-center">
+                      <span className="text-[#777777] font-black text-xs uppercase tracking-widest">তারিখ:</span>
+                      <span className="font-bold text-lg">{orderDate}</span>
                     </div>
-                    <div className="flex justify-between md:justify-start md:gap-4">
-                      <span className="text-[#777777] font-bold">পেমেন্ট স্ট্যাটাস:</span>
-                      <span className="px-2 py-0.5 bg-[#fff0e6] text-[#FF6A00] text-xs font-bold rounded">⏳ পেমেন্ট বাকি আছে</span>
+                    <div className="flex justify-between md:justify-start md:gap-6 items-center">
+                      <span className="text-[#777777] font-black text-xs uppercase tracking-widest">পেমেন্ট স্ট্যাটাস:</span>
+                      <span className="px-3 py-1 bg-[#fff0e6] text-[#FF6A00] text-xs font-black rounded-full border border-[#ffe1cc]">⏳ পেমেন্ট বাকি আছে</span>
                     </div>
                   </div>
-                  <div className="bg-[#f1fbff] p-4 rounded-xl space-y-1">
-                    <h4 className="text-[#00BFFF] font-bold mb-2 flex items-center gap-2"><Star size={16} color="#00BFFF"/> ক্লায়েন্টের তথ্য:</h4>
-                    <p><span className="text-[#777777] text-xs">নাম:</span> <span className="font-bold">{formData.fullName}</span></p>
-                    <p><span className="text-[#777777] text-xs">মোবাইল:</span> <span className="font-bold">{formData.mobile}</span></p>
-                    <p><span className="text-[#777777] text-xs">প্রতিষ্ঠান:</span> <span className="font-bold">{formData.businessName}</span></p>
-                    <p><span className="text-[#777777] text-xs">ঠিকানা:</span> <span className="font-medium">{formData.address}, {formData.district}</span></p>
+                  <div className="bg-[#f1fbff] p-6 rounded-2xl border-2 border-[#ccf2ff] space-y-2 relative">
+                    <div className="absolute top-0 right-0 p-2 opacity-10"><Star size={48} color="#00BFFF"/></div>
+                    <h4 className="text-[#00BFFF] font-black mb-3 flex items-center gap-2 text-lg"><Star size={20} color="#00BFFF"/> ক্লায়েন্টের তথ্য:</h4>
+                    <p className="flex justify-between border-b border-[#ccf2ff] pb-1"><span className="text-[#777777] text-xs font-bold uppercase">নাম:</span> <span className="font-black">{formData.fullName}</span></p>
+                    <p className="flex justify-between border-b border-[#ccf2ff] pb-1"><span className="text-[#777777] text-xs font-bold uppercase">মোবাইল:</span> <span className="font-black">{formData.mobile}</span></p>
+                    <p className="flex justify-between border-b border-[#ccf2ff] pb-1"><span className="text-[#777777] text-xs font-bold uppercase">প্রতিষ্ঠান:</span> <span className="font-black">{formData.businessName}</span></p>
+                    <p className="flex justify-between"><span className="text-[#777777] text-xs font-bold uppercase">ঠিকানা:</span> <span className="font-bold text-right">{formData.address}, {formData.district}</span></p>
                   </div>
                 </div>
 
@@ -1728,12 +1738,12 @@ function AddonSelector({ onComplete, onSkip }: { onComplete: (d: string, h: stri
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <button 
             onClick={() => setSelectedHosting('skip')}
-            className={`p-4 rounded-2xl border-2 text-sm font-bold transition-all flex flex-col items-center justify-center gap-2 ${selectedHosting === 'skip' ? 'border-sky-blue bg-sky-light text-sky-blue' : 'border-border hover:border-sky-blue'}`}
+            className={`p-6 rounded-3xl border-2 text-sm font-bold transition-all flex flex-col items-center justify-center gap-3 ${selectedHosting === 'skip' ? 'border-sky-blue bg-sky-light text-sky-blue' : 'border-border hover:border-sky-blue bg-white'}`}
           >
-            <X size={24} />
+            <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400"><X size={24} /></div>
             Skip করুন
           </button>
           {HOSTING_PLANS.map(h => {
@@ -1742,11 +1752,24 @@ function AddonSelector({ onComplete, onSkip }: { onComplete: (d: string, h: stri
               <button 
                 key={h.name}
                 onClick={() => setSelectedHosting(h.name)}
-                className={`p-4 rounded-2xl border-2 text-sm font-bold transition-all flex flex-col items-center text-center gap-2 ${selectedHosting === h.name ? 'border-sky-blue bg-sky-light text-sky-blue' : 'border-border hover:border-sky-blue'}`}
+                className={`p-6 rounded-3xl border-2 text-sm font-bold transition-all flex flex-col items-center text-center gap-3 relative overflow-hidden ${selectedHosting === h.name ? 'border-sky-blue bg-sky-light text-sky-blue' : 'border-border hover:border-sky-blue bg-white'}`}
               >
-                <span className="text-2xl">☁️</span>
-                <span>{h.name}</span>
-                <span className="text-lg text-success">৳{price.toLocaleString('bn-BD')}</span>
+                {h.name === 'WP Pro' && <div className="absolute top-0 right-0 bg-orange-brand text-white text-[8px] px-2 py-1 rounded-bl-lg font-black uppercase">Best Value</div>}
+                <span className="text-3xl">☁️</span>
+                <span className="text-lg font-black">{h.name}</span>
+                <div className="flex flex-col">
+                  <span className="text-2xl font-black text-success">৳{price.toLocaleString('bn-BD')}</span>
+                  <span className="text-[10px] opacity-60 font-medium">{hostingDuration === '1y' ? 'প্রতি বছর' : 'প্রতি মাস'}</span>
+                </div>
+                <div className="text-[10px] text-text-muted text-left w-full mt-4 space-y-1.5 bg-white/50 p-3 rounded-xl border border-border/50">
+                  {h.features.slice(0, 8).map((f, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      <span className="text-success font-bold">✓</span>
+                      <span className="leading-tight">{f}</span>
+                    </div>
+                  ))}
+                  <div className="text-center font-black text-sky-blue mt-2 pt-2 border-t border-border/30">আরও অনেক বেনিফিট...</div>
+                </div>
               </button>
             );
           })}
