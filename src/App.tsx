@@ -467,23 +467,28 @@ export default function App() {
         scrollY: 0,
         scrollX: 0,
         backgroundColor: '#ffffff',
+        windowWidth: 1200, // Provide a stable virtual window width
         onclone: (clonedDoc: Document) => {
           const invoice = clonedDoc.getElementById('invoice-paper');
           if (invoice) {
-            // Force fixed width and remove centering for capture to prevent clipping
-            invoice.style.width = '800px';
+            // Force the invoice to be at the very top-left of the cloned document
+            // and remove any centering or max-width constraints that cause clipping
+            invoice.style.width = '850px'; // Slightly wider than A4 to ensure no text wraps unexpectedly
             invoice.style.margin = '0';
+            invoice.style.padding = '0';
+            invoice.style.position = 'absolute';
+            invoice.style.top = '0';
+            invoice.style.left = '0';
             invoice.style.maxWidth = 'none';
-            invoice.style.borderRadius = '0'; // Sharper edges for PDF
+            invoice.style.borderRadius = '0';
             
-            // Ensure parent doesn't shift it
-            const parent = invoice.parentElement;
-            if (parent) {
-              parent.style.padding = '0';
-              parent.style.margin = '0';
-              parent.style.display = 'block';
-              parent.style.width = '800px';
-            }
+            // Clear the body to prevent any other elements from interfering
+            clonedDoc.body.style.margin = '0';
+            clonedDoc.body.style.padding = '0';
+            clonedDoc.body.style.width = '1200px';
+            clonedDoc.body.style.height = 'auto';
+            clonedDoc.body.innerHTML = ''; // Clear everything
+            clonedDoc.body.appendChild(invoice); // Only keep the invoice
           }
 
           // Force all elements in the cloned document to avoid modern color functions
