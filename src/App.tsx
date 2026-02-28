@@ -466,9 +466,26 @@ export default function App() {
         letterRendering: true,
         scrollY: 0,
         scrollX: 0,
-        windowWidth: 1200,
         backgroundColor: '#ffffff',
         onclone: (clonedDoc: Document) => {
+          const invoice = clonedDoc.getElementById('invoice-paper');
+          if (invoice) {
+            // Force fixed width and remove centering for capture to prevent clipping
+            invoice.style.width = '800px';
+            invoice.style.margin = '0';
+            invoice.style.maxWidth = 'none';
+            invoice.style.borderRadius = '0'; // Sharper edges for PDF
+            
+            // Ensure parent doesn't shift it
+            const parent = invoice.parentElement;
+            if (parent) {
+              parent.style.padding = '0';
+              parent.style.margin = '0';
+              parent.style.display = 'block';
+              parent.style.width = '800px';
+            }
+          }
+
           // Force all elements in the cloned document to avoid modern color functions
           // and ensure icons are rendered with correct colors
           const elements = clonedDoc.querySelectorAll('#invoice-paper *');
