@@ -28,7 +28,10 @@ import {
   ExternalLink,
   Settings,
   Save,
-  Database
+  Database,
+  User,
+  Edit2,
+  Cloud
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
@@ -238,7 +241,11 @@ export default function App() {
 
       if (error) {
         console.error('Supabase Insert Error:', error);
-        showToast(`❌ সমস্যা হয়েছে: ${error.message}`, 'error');
+        if (error.message?.includes('relation "services" does not exist')) {
+          showToast('❌ ডেটাবেজ টেবিল নেই। SQL সেটআপ কপি করে সুপাবেজে রান করুন।', 'error');
+        } else {
+          showToast(`❌ সমস্যা হয়েছে: ${error.message}`, 'error');
+        }
         throw error;
       }
 
@@ -462,7 +469,7 @@ export default function App() {
     window.scrollTo(0, 0);
 
     const opt = {
-      margin: 0, // Remove top margin to fix empty space
+      margin: 0,
       filename: `BSE-Invoice-${invoiceNumber}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
@@ -474,13 +481,20 @@ export default function App() {
         scrollX: 0,
         backgroundColor: '#ffffff',
         windowWidth: 1200,
+        ignoreElements: (el: Element) => el.classList.contains('no-print'),
         onclone: (clonedDoc: Document) => {
+          // Explicitly hide any toast or no-print elements in the clone
+          const noPrint = clonedDoc.querySelectorAll('.no-print');
+          noPrint.forEach((el: any) => {
+            (el as HTMLElement).style.display = 'none';
+            (el as HTMLElement).style.visibility = 'hidden';
+          });
+
           const invoice = clonedDoc.getElementById('invoice-paper');
           if (invoice) {
-            // Force the invoice to be at the very top-left of the cloned document
             invoice.style.width = '850px';
             invoice.style.margin = '0';
-            invoice.style.padding = '40px'; // Add internal padding for better look
+            invoice.style.padding = '50px'; // More padding for premium feel
             invoice.style.position = 'absolute';
             invoice.style.top = '0';
             invoice.style.left = '0';
@@ -489,7 +503,6 @@ export default function App() {
             invoice.style.boxShadow = 'none';
             invoice.style.border = 'none';
             
-            // Clear the body to prevent any other elements (like toasts) from interfering
             clonedDoc.body.style.margin = '0';
             clonedDoc.body.style.padding = '0';
             clonedDoc.body.style.backgroundColor = '#ffffff';
@@ -1027,8 +1040,13 @@ export default function App() {
                 <p className="text-text-muted">এখান থেকে সার্ভিসের মূল্য পরিবর্তন করুন</p>
               </div>
               <div className="flex gap-4">
-                <button 
-                  onClick={() => {
+                <div className="flex items-center gap-3">
+                  <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${services.length > 0 ? 'bg-success/10 text-success border border-success/20' : 'bg-orange-brand/10 text-orange-brand border border-orange-brand/20'}`}>
+                    <div className={`w-2 h-2 rounded-full ${services.length > 0 ? 'bg-success animate-pulse' : 'bg-orange-brand'}`}></div>
+                    {services.length > 0 ? 'Database Connected' : 'Using Local Data'}
+                  </div>
+                  <button 
+                    onClick={() => {
                     const sql = `
 -- 1. Create Services Table
 create table if not exists services (
@@ -1102,8 +1120,9 @@ end $$;
                 </button>
               </div>
             </div>
+          </div>
 
-            <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+          <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-sky-light/50 text-sky-blue uppercase text-xs font-black">
@@ -1120,6 +1139,7 @@ end $$;
                       key={service.id} 
                       service={service} 
                       onUpdate={updateServicePrice} 
+                      showToast={showToast}
                     />
                   ))}
                 </tbody>
@@ -1149,47 +1169,69 @@ end $$;
               .text-danger { color: #EF4444 !important; }
               .border-border { border-color: #e8f0ff !important; }
             `}</style>
-            <div id="invoice-paper" style={{ color: '#1a1a2e' }} className="bg-[#ffffff] border-2 border-[#e8f0ff] rounded-2xl overflow-visible shadow-xl">
-              {/* Invoice Header - More Professional */}
-              <div className="bg-[#00BFFF] p-10 text-[#ffffff] flex flex-col md:flex-row justify-between items-center gap-8 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full -ml-24 -mb-24 blur-2xl"></div>
+            <div id="invoice-paper" style={{ color: '#1a1a2e' }} className="bg-[#ffffff] border-2 border-[#e8f0ff] rounded-2xl overflow-visible shadow-2xl">
+              {/* Invoice Header - Premium Design */}
+              <div className="bg-gradient-to-br from-[#00BFFF] via-[#0099FF] to-[#0080FF] p-14 text-[#ffffff] flex flex-col md:flex-row justify-between items-center gap-10 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full -mr-64 -mt-64 blur-[100px]"></div>
+                <div className="absolute bottom-0 left-0 w-96 h-96 bg-black/10 rounded-full -ml-48 -mb-48 blur-[80px]"></div>
                 
                 <div className="text-center md:text-left relative z-10">
-                  <h1 className="text-5xl font-black mb-2 tracking-tighter">Best Solution Experts</h1>
-                  <p className="text-[#e0f7ff] font-bold text-lg opacity-90">Digital Marketing & Technology Agency</p>
+                  <div className="inline-block px-4 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] mb-4 backdrop-blur-md border border-white/30">Official Invoice</div>
+                  <h1 className="text-7xl font-black mb-4 tracking-tighter drop-shadow-2xl leading-none">Best Solution Experts</h1>
+                  <div className="flex items-center justify-center md:justify-start gap-4">
+                    <div className="h-1.5 w-16 bg-white rounded-full shadow-sm"></div>
+                    <p className="text-[#e0f7ff] font-black text-2xl tracking-wide uppercase opacity-90">Digital Marketing & Technology Agency</p>
+                  </div>
                 </div>
-                <div className="text-center md:text-right space-y-2 text-sm relative z-10 bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/20">
-                  <p className="flex items-center justify-center md:justify-end gap-2 font-bold"><Phone size={16} color="#ffffff"/> ০১৮৪৩০৬৭১১৮</p>
-                  <p className="flex items-center justify-center md:justify-end gap-2 font-bold"><Globe size={16} color="#ffffff"/> www.bestsolutionexperts.com</p>
-                  <p className="flex items-center justify-center md:justify-end gap-2 font-bold"><Mail size={16} color="#ffffff"/> info@bestsolutionexperts.com</p>
+                <div className="text-center md:text-right space-y-4 text-sm relative z-10 bg-white/10 p-8 rounded-[40px] backdrop-blur-xl border border-white/40 shadow-2xl min-w-[300px]">
+                  <p className="flex items-center justify-center md:justify-end gap-4 font-black text-lg"><Phone size={22} color="#ffffff" strokeWidth={3}/> ০১৮৪৩০৬৭১১৮</p>
+                  <p className="flex items-center justify-center md:justify-end gap-4 font-black text-lg"><Globe size={22} color="#ffffff" strokeWidth={3}/> www.bestsolutionexperts.com</p>
+                  <p className="flex items-center justify-center md:justify-end gap-4 font-black text-lg"><Mail size={22} color="#ffffff" strokeWidth={3}/> info@bestsolutionexperts.com</p>
                 </div>
               </div>
 
-              <div className="p-10">
-                {/* Invoice Meta */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10 pb-10 border-b-2 border-[#e8f0ff]">
-                  <div className="space-y-3">
-                    <div className="flex justify-between md:justify-start md:gap-6 items-center">
-                      <span className="text-[#777777] font-black text-xs uppercase tracking-widest">ইনভয়েস নং:</span>
-                      <span className="font-black text-xl text-[#00BFFF]">{invoiceNumber}</span>
+              <div className="p-14">
+                {/* Invoice Meta - Modern Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-14 pb-14 border-b-4 border-[#f0f9ff]">
+                  <div className="space-y-6">
+                    <div className="flex flex-col">
+                      <span className="text-[#777777] font-black text-[10px] uppercase tracking-[0.3em] mb-2 opacity-60">Invoice Number</span>
+                      <span className="font-black text-4xl text-[#00BFFF] tracking-tighter">#{invoiceNumber}</span>
                     </div>
-                    <div className="flex justify-between md:justify-start md:gap-6 items-center">
-                      <span className="text-[#777777] font-black text-xs uppercase tracking-widest">তারিখ:</span>
-                      <span className="font-bold text-lg">{orderDate}</span>
-                    </div>
-                    <div className="flex justify-between md:justify-start md:gap-6 items-center">
-                      <span className="text-[#777777] font-black text-xs uppercase tracking-widest">পেমেন্ট স্ট্যাটাস:</span>
-                      <span className="px-3 py-1 bg-[#fff0e6] text-[#FF6A00] text-xs font-black rounded-full border border-[#ffe1cc]">⏳ পেমেন্ট বাকি আছে</span>
+                    <div className="flex flex-col">
+                      <span className="text-[#777777] font-black text-[10px] uppercase tracking-[0.3em] mb-2 opacity-60">Issue Date</span>
+                      <span className="font-black text-2xl text-[#1a1a2e]">{orderDate}</span>
                     </div>
                   </div>
-                  <div className="bg-[#f1fbff] p-6 rounded-2xl border-2 border-[#ccf2ff] space-y-2 relative">
-                    <div className="absolute top-0 right-0 p-2 opacity-10"><Star size={48} color="#00BFFF"/></div>
-                    <h4 className="text-[#00BFFF] font-black mb-3 flex items-center gap-2 text-lg"><Star size={20} color="#00BFFF"/> ক্লায়েন্টের তথ্য:</h4>
-                    <p className="flex justify-between border-b border-[#ccf2ff] pb-1"><span className="text-[#777777] text-xs font-bold uppercase">নাম:</span> <span className="font-black">{formData.fullName}</span></p>
-                    <p className="flex justify-between border-b border-[#ccf2ff] pb-1"><span className="text-[#777777] text-xs font-bold uppercase">মোবাইল:</span> <span className="font-black">{formData.mobile}</span></p>
-                    <p className="flex justify-between border-b border-[#ccf2ff] pb-1"><span className="text-[#777777] text-xs font-bold uppercase">প্রতিষ্ঠান:</span> <span className="font-black">{formData.businessName}</span></p>
-                    <p className="flex justify-between"><span className="text-[#777777] text-xs font-bold uppercase">ঠিকানা:</span> <span className="font-bold text-right">{formData.address}, {formData.district}</span></p>
+                  
+                  <div className="flex flex-col justify-center items-center md:items-start">
+                    <span className="text-[#777777] font-black text-[10px] uppercase tracking-[0.3em] mb-3 opacity-60">Payment Status</span>
+                    <div className="inline-flex items-center gap-3 px-8 py-3 bg-[#fff0e6] text-[#FF6A00] text-base font-black rounded-3xl border-2 border-[#ffe1cc] shadow-lg">
+                      <span className="animate-pulse text-xl">⏳</span> পেমেন্ট বাকি আছে
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-[#f1fbff] to-[#ffffff] p-10 rounded-[40px] border-2 border-[#ccf2ff] space-y-4 relative shadow-xl">
+                    <div className="absolute top-0 right-0 p-4 opacity-5"><Star size={100} color="#00BFFF"/></div>
+                    <h4 className="text-[#00BFFF] font-black mb-6 flex items-center gap-4 text-2xl"><User size={28} color="#00BFFF" strokeWidth={3}/> Client Details</h4>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center border-b border-[#ccf2ff] pb-3">
+                        <span className="text-[#777777] text-[10px] font-black uppercase tracking-widest">Name</span>
+                        <span className="font-black text-lg text-[#1a1a2e]">{formData.fullName}</span>
+                      </div>
+                      <div className="flex justify-between items-center border-b border-[#ccf2ff] pb-3">
+                        <span className="text-[#777777] text-[10px] font-black uppercase tracking-widest">Mobile</span>
+                        <span className="font-black text-lg text-[#1a1a2e]">{formData.mobile}</span>
+                      </div>
+                      <div className="flex justify-between items-center border-b border-[#ccf2ff] pb-3">
+                        <span className="text-[#777777] text-[10px] font-black uppercase tracking-widest">Business</span>
+                        <span className="font-black text-lg text-[#1a1a2e]">{formData.businessName}</span>
+                      </div>
+                      <div className="flex justify-between items-start pt-2">
+                        <span className="text-[#777777] text-[10px] font-black uppercase tracking-widest mt-1">Address</span>
+                        <span className="font-bold text-sm text-right max-w-[180px] text-[#1a1a2e] leading-relaxed">{formData.address}, {formData.district}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -1602,7 +1644,7 @@ end $$;
   );
 }
 
-function AdminRow({ service, onUpdate }: { service: Service, onUpdate: (id: string, op: number, dp: number) => Promise<void>, key?: any }) {
+function AdminRow({ service, onUpdate, showToast }: { service: Service, onUpdate: (id: string, op: number, dp: number) => Promise<void>, showToast: (msg: string, type?: 'success' | 'error' | 'info') => void, key?: any }) {
   const [op, setOp] = useState(service.originalPrice);
   const [dp, setDp] = useState(service.discountPrice);
   const [isEditing, setIsEditing] = useState(false);
@@ -1668,12 +1710,29 @@ function AdminRow({ service, onUpdate }: { service: Service, onUpdate: (id: stri
             </button>
           </div>
         ) : (
-          <button 
-            onClick={() => setIsEditing(true)}
-            className="p-2 text-sky-blue hover:bg-sky-light rounded-lg transition-colors"
-          >
-            <Settings size={16} />
-          </button>
+          <div className="flex justify-end gap-2">
+            <button 
+              onClick={() => setIsEditing(true)}
+              className="p-2 text-sky-blue hover:bg-sky-light rounded-lg transition-colors"
+            >
+              <Settings size={16} />
+            </button>
+            <button 
+              onClick={async () => {
+                if (confirm('আপনি কি এই সার্ভিসটি ডিলিট করতে চান?')) {
+                  const { error } = await supabase.from('services').delete().eq('id', service.id);
+                  if (error) showToast('ডিলিট করতে সমস্যা হয়েছে', 'error');
+                  else {
+                    showToast('সার্ভিস ডিলিট হয়েছে', 'success');
+                    window.location.reload();
+                  }
+                }
+              }}
+              className="p-2 text-danger hover:bg-danger/10 rounded-lg transition-colors"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
         )}
       </td>
     </tr>
